@@ -282,6 +282,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <EmbeddedResource Include="Icon.bmp" />
     <Content Include="StardewModdingAPI.config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
