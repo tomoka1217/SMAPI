@@ -11,6 +11,7 @@
   * Added `IsLocalPlayer` to new player events.
   * Reloading a map asset will now update affected locations.
   * Reloading the `Data\NPCDispositions` asset will now update affected NPCs.
+  * Improved how SMAPI events work at the end of day. Events are now raised correctly while end-of-day menus like the shipping menu are shown, and `BeforeSave` is now raised immediately before save instead of when the shipping menu is opened.
   * Fixed some map tilesheets not editable if not playing in English.
   * Fixed newlines in most manifest fields not being ignored.
   * Fixed `Display.RenderedWorld` event not invoked before overlays are rendered.

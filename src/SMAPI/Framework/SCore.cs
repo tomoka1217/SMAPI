@@ -166,11 +166,6 @@ namespace StardewModdingAPI.Framework
                 return;
             }
 #endif
-
-            // apply game patches
-            new GamePatcher(this.Monitor).Apply(
-                new DialogueErrorPatch(this.MonitorForGame, this.Reflection)
-            );
         }
 
         /// <summary>Launch SMAPI.</summary>
@@ -283,6 +278,12 @@ namespace StardewModdingAPI.Framework
                 File.Delete(Constants.FatalCrashLog);
                 File.Delete(Constants.FatalCrashMarker);
             }
+
+            // apply game patches
+            new GamePatcher(this.Monitor).Apply(
+                new DialogueErrorPatch(this.MonitorForGame, this.Reflection),
+                new SaveGamePatch(onSaving: this.GameInstance.OnSaving, onSaved: this.GameInstance.OnSaved)
+            );
 
             // start game
             this.Monitor.Log("Starting game...", LogLevel.Debug);

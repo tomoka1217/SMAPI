@@ -204,6 +204,56 @@ namespace StardewModdingAPI.Framework
             this.Events.DayEnding.RaiseEmpty();
         }
 
+        /// <summary>A callback invoked before <see cref="SaveGame.Save"/> runs.</summary>
+        internal void OnSaving()
+        {
+            // raise events
+            if (!Context.IsWorldReady)
+            {
+                this.IsBetweenCreateEvents = true;
+                this.Monitor.Log("Context: before save creation.", LogLevel.Trace);
+                this.Events.SaveCreating.RaiseEmpty();
+#if !SMAPI_3_0_STRICT
+                this.Events.Legacy_BeforeCreateSave.Raise();
+#endif
+            }
+            else
+            {
+                this.IsBetweenSaveEvents = true;
+                this.Monitor.Log("Context: before save.", LogLevel.Trace);
+                this.Events.Saving.RaiseEmpty();
+#if !SMAPI_3_0_STRICT
+                this.Events.Legacy_BeforeSave.Raise();
+#endif
+            }
+        }
+
+        /// <summary>A callback invoked after <see cref="SaveGame.Save"/> runs.</summary>
+        internal void OnSaved()
+        {
+            // reset flags
+            this.IsBetweenCreateEvents = false;
+            this.IsBetweenSaveEvents = false;
+
+            // raise events
+            if (!Context.IsWorldReady)
+            {
+                this.Monitor.Log($"Context: after save creation, starting {Game1.currentSeason} {Game1.dayOfMonth} Y{Game1.year}.", LogLevel.Trace);
+                this.Events.SaveCreated.RaiseEmpty();
+#if !SMAPI_3_0_STRICT
+                this.Events.Legacy_AfterCreateSave.Raise();
+#endif
+            }
+            else
+            {
+                this.Monitor.Log($"Context: after save, starting {Game1.currentSeason} {Game1.dayOfMonth} Y{Game1.year}.", LogLevel.Trace);
+                this.Events.Saved.RaiseEmpty();
+#if !SMAPI_3_0_STRICT
+                this.Events.Legacy_AfterSave.Raise();
+#endif
+            }
+        }
+
         /// <summary>A callback invoked when a mod message is received.</summary>
         /// <param name="message">The message to deliver to applicable mods.</param>
         private void OnModMessageReceived(ModMessageModel message)
@@ -362,67 +412,21 @@ namespace StardewModdingAPI.Framework
                     inputState.TrueUpdate();
 
                 /*********
-                ** Save events + suppress events during save
+                ** Suppress events during save
                 *********/
                 // While the game is writing to the save file in the background, mods can unexpectedly
                 // fail since they don't have exclusive access to resources (e.g. collection changed
                 // during enumeration errors). To avoid problems, events are not invoked while a save
-                // is in progress. It's safe to raise SaveEvents.BeforeSave as soon as the menu is
-                // opened (since the save hasn't started yet), but all other events should be suppressed.
-                if (Context.IsSaving)
+                // is in progress.
+                if (this.IsBetweenCreateEvents || this.IsBetweenSaveEvents)
                 {
-                    // raise before-create
-                    if (!Context.IsWorldReady && !this.IsBetweenCreateEvents)
-                    {
-                        this.IsBetweenCreateEvents = true;
-                        this.Monitor.Log("Context: before save creation.", LogLevel.Trace);
-                        this.Events.SaveCreating.RaiseEmpty();
-#if !SMAPI_3_0_STRICT
-                        this.Events.Legacy_BeforeCreateSave.Raise();
-#endif
-                    }
-
-                    // raise before-save
-                    if (Context.IsWorldReady && !this.IsBetweenSaveEvents)
-                    {
-                        this.IsBetweenSaveEvents = true;
-                        this.Monitor.Log("Context: before save.", LogLevel.Trace);
-                        this.Events.Saving.RaiseEmpty();
-#if !SMAPI_3_0_STRICT
-                        this.Events.Legacy_BeforeSave.Raise();
-#endif
-                    }
-
-                    // suppress non-save events
                     this.Events.UnvalidatedUpdateTicking.Raise(new UnvalidatedUpdateTickingEventArgs(this.TicksElapsed));
                     base.Update(gameTime);
                     this.Events.UnvalidatedUpdateTicked.Raise(new UnvalidatedUpdateTickedEventArgs(this.TicksElapsed));
 #if !SMAPI_3_0_STRICT
-                    this.Events.Legacy_UnvalidatedUpdateTick.Raise();
+                    this.Events.Legacy_BeforeCreateSave.Raise();
 #endif
                     return;
-                }
-                if (this.IsBetweenCreateEvents)
-                {
-                    // raise after-create
-                    this.IsBetweenCreateEvents = false;
-                    this.Monitor.Log($"Context: after save creation, starting {Game1.currentSeason} {Game1.dayOfMonth} Y{Game1.year}.", LogLevel.Trace);
-                    this.Events.SaveCreated.RaiseEmpty();
-#if !SMAPI_3_0_STRICT
-                    this.Events.Legacy_AfterCreateSave.Raise();
-#endif
-                }
-                if (this.IsBetweenSaveEvents)
-                {
-                    // raise after-save
-                    this.IsBetweenSaveEvents = false;
-                    this.Monitor.Log($"Context: after save, starting {Game1.currentSeason} {Game1.dayOfMonth} Y{Game1.year}.", LogLevel.Trace);
-                    this.Events.Saved.RaiseEmpty();
-                    this.Events.DayStarted.RaiseEmpty();
-#if !SMAPI_3_0_STRICT
-                    this.Events.Legacy_AfterSave.Raise();
-                    this.Events.Legacy_AfterDayStarted.Raise();
-#endif
                 }
 
                 /*********
