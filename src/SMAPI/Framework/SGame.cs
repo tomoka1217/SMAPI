@@ -199,7 +199,7 @@ namespace StardewModdingAPI.Framework
         }
 
         /// <summary>A callback invoked before <see cref="Game1.newDayAfterFade"/> runs.</summary>
-        protected void OnNewDayAfterFade()
+        private void OnNewDayAfterFade()
         {
             this.Events.DayEnding.RaiseEmpty();
         }
@@ -229,7 +229,7 @@ namespace StardewModdingAPI.Framework
         }
 
         /// <summary>A callback invoked after <see cref="SaveGame.Save"/> runs.</summary>
-        internal void OnSaved()
+        private void OnSaved()
         {
             // reset flags
             this.IsBetweenCreateEvents = false;
@@ -420,13 +420,18 @@ namespace StardewModdingAPI.Framework
                 // is in progress.
                 if (this.IsBetweenCreateEvents || this.IsBetweenSaveEvents)
                 {
-                    this.Events.UnvalidatedUpdateTicking.Raise(new UnvalidatedUpdateTickingEventArgs(this.TicksElapsed));
-                    base.Update(gameTime);
-                    this.Events.UnvalidatedUpdateTicked.Raise(new UnvalidatedUpdateTickedEventArgs(this.TicksElapsed));
+                    if (!Context.IsSaving)
+                        this.OnSaved();
+                    else
+                    {
+                        this.Events.UnvalidatedUpdateTicking.Raise(new UnvalidatedUpdateTickingEventArgs(this.TicksElapsed));
+                        base.Update(gameTime);
+                        this.Events.UnvalidatedUpdateTicked.Raise(new UnvalidatedUpdateTickedEventArgs(this.TicksElapsed));
 #if !SMAPI_3_0_STRICT
-                    this.Events.Legacy_BeforeCreateSave.Raise();
+                        this.Events.Legacy_BeforeCreateSave.Raise();
 #endif
-                    return;
+                        return;
+                    }
                 }
 
                 /*********

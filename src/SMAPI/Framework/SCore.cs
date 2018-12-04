@@ -282,7 +282,7 @@ namespace StardewModdingAPI.Framework
             // apply game patches
             new GamePatcher(this.Monitor).Apply(
                 new DialogueErrorPatch(this.MonitorForGame, this.Reflection),
-                new SaveGamePatch(onSaving: this.GameInstance.OnSaving, onSaved: this.GameInstance.OnSaved)
+                new SaveGamePatch(onSaving: this.GameInstance.OnSaving)
             );
 
             // start game
