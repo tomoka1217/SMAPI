@@ -9,6 +9,20 @@ namespace StardewModdingAPI.Framework.Events
         /*********
         ** Accessors
         *********/
+        /// <summary>Raised before the game checks for an action in response to a player click. That includes activating an interactive object, opening a chest, talking to an NPC, putting an item in a machine, etc. NOTE: this event is currently only raised for the current player.</summary>
+        public event EventHandler<CheckingForActionEventArgs> CheckingForAction
+        {
+            add => this.EventManager.CheckingForAction.Add(value);
+            remove => this.EventManager.CheckingForAction.Remove(value);
+        }
+
+        /// <summary>Raised after the game checks for an action in response to a player input. That includes activating an interactive object, opening a chest, putting an item in a machine, etc. NOTE: this event is currently only raised for the current player.</summary>
+        public event EventHandler<CheckedForActionEventArgs> CheckedForAction
+        {
+            add => this.EventManager.CheckedForAction.Add(value);
+            remove => this.EventManager.CheckedForAction.Remove(value);
+        }
+
         /// <summary>Raised after items are added or removed to a player's inventory. NOTE: this event is currently only raised for the local player.</summary>
         public event EventHandler<InventoryChangedEventArgs> InventoryChanged
         {

@@ -121,6 +121,12 @@ namespace StardewModdingAPI.Framework.Events
         /****
         ** Player
         ****/
+        /// <summary>Raised before the game checks for an action in response to a player click.</summary>
+        public readonly ManagedEvent<CheckingForActionEventArgs> CheckingForAction;
+
+        /// <summary>Raised after the game checks for an action in response to a player click.</summary>
+        public readonly ManagedEvent<CheckedForActionEventArgs> CheckedForAction;
+
         /// <summary>Raised after items are added or removed to a player's inventory.</summary>
         public readonly ManagedEvent<InventoryChangedEventArgs> InventoryChanged;
 
@@ -407,6 +413,8 @@ namespace StardewModdingAPI.Framework.Events
             this.ModMessageReceived = ManageEventOf<ModMessageReceivedEventArgs>(nameof(IModEvents.Multiplayer), nameof(IMultiplayerEvents.ModMessageReceived));
             this.PeerDisconnected = ManageEventOf<PeerDisconnectedEventArgs>(nameof(IModEvents.Multiplayer), nameof(IMultiplayerEvents.PeerDisconnected));
 
+            this.CheckingForAction = ManageEventOf<CheckingForActionEventArgs>(nameof(IModEvents.Player), nameof(IPlayerEvents.CheckingForAction));
+            this.CheckedForAction = ManageEventOf<CheckedForActionEventArgs>(nameof(IModEvents.Player), nameof(IPlayerEvents.CheckedForAction));
             this.InventoryChanged = ManageEventOf<InventoryChangedEventArgs>(nameof(IModEvents.Player), nameof(IPlayerEvents.InventoryChanged));
             this.LevelChanged = ManageEventOf<LevelChangedEventArgs>(nameof(IModEvents.Player), nameof(IPlayerEvents.LevelChanged));
             this.Warped = ManageEventOf<WarpedEventArgs>(nameof(IModEvents.Player), nameof(IPlayerEvents.Warped));

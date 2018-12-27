@@ -163,7 +163,7 @@ namespace StardewModdingAPI.Framework
             this.OnGameExiting = onGameExiting;
             Game1.input = new SInputState();
             Game1.multiplayer = new SMultiplayer(monitor, eventManager, jsonHelper, modRegistry, reflection, this.OnModMessageReceived);
-            Game1.hooks = new SModHooks(this.OnNewDayAfterFade);
+            Game1.hooks = new SModHooks(this.OnNewDayAfterFade, this.OnLocationCheckingAction);
 
             // init observables
             Game1.locations = new ObservableCollection<GameLocation>();
@@ -193,9 +193,38 @@ namespace StardewModdingAPI.Framework
         }
 
         /// <summary>A callback invoked before <see cref="Game1.newDayAfterFade"/> runs.</summary>
-        protected void OnNewDayAfterFade()
+        /// <param name="resume">Resume the vanilla logic.</param>
+        protected void OnNewDayAfterFade(Action resume)
         {
             this.Events.DayEnding.RaiseEmpty();
+            resume();
+        }
+
+        /// <summary>A callback invoked before <see cref="GameLocation.checkAction"/> runs.</summary>
+        /// <param name="location">The location being checked.</param>
+        /// <param name="tileLocation">The tile coordinate being checked.</param>
+        /// <param name="who">The player checking for an action.</param>
+        /// <param name="resume">Resume the default logic.</param>
+        private bool OnLocationCheckingAction(GameLocation location, Location tileLocation, Farmer who, Func<bool> resume)
+        {
+            // check for event listeners
+            bool hasPreListeners = this.Events.CheckingForAction.HasListeners();
+            bool hasPostListeners = this.Events.CheckedForAction.HasListeners();
+            if (!hasPreListeners && !hasPostListeners)
+                return resume();
+
+            // get tile info
+            Vector2 tilePos = new Vector2(tileLocation.X, tileLocation.Y);
+            Lazy<string> actionPropertyValue = new Lazy<string>(() => location.doesTileHaveProperty(tileLocation.X, tileLocation.Y, "Action", "Buildings"));
+
+            // raise events
+            if (hasPreListeners)
+                this.Events.CheckingForAction.Raise(new CheckingForActionEventArgs(who, tilePos, this.Input.CursorPosition, actionPropertyValue));
+            bool result = resume();
+            if (hasPostListeners)
+                this.Events.CheckedForAction.Raise(new CheckedForActionEventArgs(who, tilePos, this.Input.CursorPosition, actionPropertyValue, result));
+
+            return result;
         }
 
         /// <summary>A callback invoked when a mod message is received.</summary>
@@ -1384,7 +1413,7 @@ namespace StardewModdingAPI.Framework
                                 }
                                 Game1.drawPlayerHeldObject(Game1.player);
                             }
-                            label_129:
+                        label_129:
                             if ((Game1.player.UsingTool || Game1.pickingTool) && Game1.player.CurrentTool != null && ((!Game1.player.CurrentTool.Name.Equals("Seeds") || Game1.pickingTool) && (Game1.currentLocation.Map.GetLayer("Front").PickTile(new Location(Game1.player.getStandingX(), (int)Game1.player.Position.Y - 38), Game1.viewport.Size) != null && Game1.currentLocation.Map.GetLayer("Front").PickTile(new Location(Game1.player.getStandingX(), Game1.player.getStandingY()), Game1.viewport.Size) == null)))
                                 Game1.drawTool(Game1.player);
                             if (Game1.currentLocation.Map.GetLayer("AlwaysFront") != null)
