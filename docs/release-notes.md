@@ -1,4 +1,8 @@
 # Release notes
+## Upcoming release
+* For players:
+  * Added mod page link to 'missing dependency' errors for the most common dependencies.
+
 ## 2.10.1
 Released 30 December 2018 for Stardew Valley 1.3.32.
 
