@@ -2,6 +2,7 @@
 ## Upcoming release
 * For players:
   * Added mod page link to 'missing dependency' errors for the most common dependencies.
+  * Fixed 'unknown mod' deprecation warnings showing a stack trace when developers mode not enabled.
 
 * For modders:
   * Added `IContentPack.HasFile` method.
