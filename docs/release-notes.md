@@ -11,6 +11,7 @@
 * For modders:
   * Added `IContentPack.HasFile` method.
   * Fixed 'unknown mod' deprecation warnings showing the wrong stack trace.
+  * Fixed `e.Cursor` in input events showing wrong grab tile when player using a controller moves without moving the viewpoint.
 
 ## 2.10.1
 Released 30 December 2018 for Stardew Valley 1.3.32.
