@@ -13,6 +13,7 @@
   * Updated to Json.NET 12.0.1.
   * Fixed 'unknown mod' deprecation warnings showing the wrong stack trace.
   * Fixed `e.Cursor` in input events showing wrong grab tile when player using a controller moves without moving the viewpoint.
+  * Fixed incorrect 'bypassed safety checks' warning for mods using the new `Specialised.LoadStageChanged` event in 2.10.
 
 ## 2.10.1
 Released 30 December 2018 for Stardew Valley 1.3.32.
