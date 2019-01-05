@@ -7,6 +7,7 @@
     * SMAPI now keeps the first backup created for the day, instead of the last one.
   * Fixed 'unknown mod' deprecation warnings showing a stack trace when developers mode not enabled.
   * Fixed 'unknown mod' deprecation warnings when they occur in the Mod constructor.
+  * Updated compatibility list.
 
 * For modders:
   * Added `IContentPack.HasFile` method.
