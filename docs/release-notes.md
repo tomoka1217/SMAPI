@@ -9,6 +9,9 @@
   * Fixed 'unknown mod' deprecation warnings when they occur in the Mod constructor.
   * Updated compatibility list.
 
+* For the web UI:
+  * Fixed broken ModDrop links in the compatibility list.
+
 * For modders:
   * Added `IContentPack.HasFile` method.
   * Updated to Json.NET 12.0.1.
