@@ -14,6 +14,7 @@
 
 * For modders:
   * Added `IContentPack.HasFile` method.
+  * Asset changes are now propagated into the parsed save being loaded if applicable.
   * Updated to Json.NET 12.0.1.
   * Fixed 'unknown mod' deprecation warnings showing the wrong stack trace.
   * Fixed `e.Cursor` in input events showing wrong grab tile when player using a controller moves without moving the viewpoint.
