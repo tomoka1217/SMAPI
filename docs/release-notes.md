@@ -1,17 +1,16 @@
 # Release notes
-## Upcoming release
+## 2.11 beta
 * For players:
+  * Updated for Stardew Valley 1.3.35 beta. **Not compatible with non-beta versions of the game.**
   * Added mod page link to 'missing dependency' errors for the most common dependencies.
   * Improved save backups:
     * When compression isn't available on Linux, SMAPI now falls back to uncompressed backups.
     * SMAPI now keeps the first backup created for the day, instead of the last one.
   * Fixed 'unknown mod' deprecation warnings showing a stack trace when developers mode not enabled.
   * Fixed 'unknown mod' deprecation warnings when they occur in the Mod constructor.
+  * Fixed broken ModDrop links in the compatibility list.
   * Tweaked XNB mod message for clarity.
   * Updated compatibility list.
-
-* For the web UI:
-  * Fixed broken ModDrop links in the compatibility list.
 
 * For modders:
   * Added `IContentPack.HasFile` method.
