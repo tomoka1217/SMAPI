@@ -8,9 +8,12 @@
     * SMAPI now keeps the first backup created for the day, instead of the last one.
   * Fixed 'unknown mod' deprecation warnings showing a stack trace when developers mode not enabled.
   * Fixed 'unknown mod' deprecation warnings when they occur in the Mod constructor.
-  * Fixed broken ModDrop links in the compatibility list.
   * Tweaked XNB mod message for clarity.
   * Updated compatibility list.
+
+* For the web UI:
+  * Added beta status filter to compatibility list.
+  * Fixed broken ModDrop links in the compatibility list.
 
 * For modders:
   * Added `IContentPack.HasFile` method.
